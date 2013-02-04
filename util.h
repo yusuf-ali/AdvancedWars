@@ -31,8 +31,13 @@ void dcry(int *value);          /* this decrypes integer values */
 void dcryf(float *value);       /* this decrypts float values */
 void dcryd(double *value);      /* this decrypts double values */
 
-
-
+/*
+ these methods are for formulas used to calculate
+ events in the game, theoretical damage etc.
+*/
+float tDamage(int *att,int *def,int *rank,int *mod);    // calculates theoretical damage
+float aDamage(int *def,int *rank,int *tdmg);            // calculates the actual damage inflicted
+float rDamage(int *def,int *att,int *rank,int *mod);    // calculates the retaliation damage
 
 
 #endif
