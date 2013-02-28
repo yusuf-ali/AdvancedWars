@@ -30,7 +30,7 @@ struct unt{
     
     /* static, change only with promotion */
     int max_ammo;        /* maximum unit */
-    int range;          /* the range this unit can shoot */
+    float range;          /* the range this unit can shoot */
     int rank;           /* the rank of a unit */
     int dmg[5];         /* damage modifiers to specific classes */
     
@@ -58,7 +58,23 @@ struct unt{
     /* general methods for other uses */
     bool (*move)(struct unt *slf, int *loc);
     bool (*promote)(struct unt *slf);
+    
 };
+
+
+void initialize(struct unt *unit,int type,int team, int *loc);
+
+/* typical unit methods */
+bool move(struct unt *slf, int *loc);
+bool promote(struct unt *slf);
+bool can_attk(struct unt *slf,int *loc);
+
+bool atk_u(struct unt *slf, struct unt *def);      bool def_u(struct unt *slf, struct unt *att,float *dmg);
+bool atk_v(struct unt *slf, struct veh *def);      bool def_v(struct unt *slf, struct veh *att,float *dmg);
+bool atk_s(struct unt *slf, struct shp *def);      bool def_s(struct unt *slf, struct shp *att,float *dmg);
+bool atk_a(struct unt *slf, struct air *def);      bool def_a(struct unt *slf, struct air *att,float *dmg);
+bool atk_b(struct unt *slf, struct bld *def);      bool def_b(struct unt *slf, struct bld *att,float *dmg);
+
 
 
 

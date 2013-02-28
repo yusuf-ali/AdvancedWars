@@ -38,6 +38,16 @@ void dcryd(double *value);      /* this decrypts double values */
 float tDamage(int *att,int *def,int *rank,int *mod);    // calculates theoretical damage
 float aDamage(int *def,int *rank,int *tdmg);            // calculates the actual damage inflicted
 float rDamage(int *def,int *att,int *rank,int *mod);    // calculates the retaliation damage
+float distance(int *loc1,int *loc2);                    // determins distance of 2 x,y,z vectors
 
+/* this data holds the table data for Units */
+float data[5][9][7];
+/*
+ first dimension contains class identifier
+ second dimension contains type identifier
+ third dimension contains damage modifiers
+        second last element contains the range
+        last element of third dimension contains price
+*/
 
 #endif
