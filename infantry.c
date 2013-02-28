@@ -1,71 +1,89 @@
 #include <stdio.h>
-#include "infantry.h"
+#include "unit.h"
+#include "util.h"
 
-/* initializes the basic infantry unit file */
-void initialize(struct unt *unit,int type,int team, int *loc){
-    /* point functions to the empty functions in the struct */
-    unit->promote = promote;    unit->move = move;
-    
-    /* spawn unit to a location */
-    unit->loc[0] = *loc; unit->loc[1] = *(loc+1); unit->loc[2] = *(loc+2);
-    
-    /* initialize universal stats */
-    unit->team = team; unit->type = type; unit->Class = 0;
-    unit->dmg[2] = 0; unit->max_steps = 3; unit->max_ammo = 6;
-    unit->rank = 1; unit->promo = 5; unit->cur_steps = unit->max_steps;
-    unit->did_fire = FALSE; unit->ammo = 6; unit->hp = 100; unit->rank =0;
-    
-    /* initialize specific infantry stats */
-    unit->range = data[0][type][5];
-    
-    unit->dmg[0] = data[0][type][0];
-    unit->dmg[1] = data[0][type][1];
-    unit->dmg[2] = data[0][type][2];
-    unit->dmg[3] = data[0][type][3];
-    unit->dmg[4] = data[0][type][4];
-}
+/*
+ THIS IS THE FILE FOR INFANTRY METHODS
+*/
 
+/* methods declarion for all infantry units */
+bool inf_atk(struct unt *slf, struct unt *def);             /* finished */
+bool inf_def(struct unt *slf, struct unt *att,float *dmg);  
+bool inf_can_atk(struct unt *slf, struct unt *def);
+bool inf_can_mov(struct unt *slf, int *loc);                /* almost finished */
+bool inf_move(struct unt *slf, int *loc);                   /* almost finished */
+bool inf_promote(struct unt *slf);                          /* finished */
+void inf_refresh(struct unt *slf);                          /* finished */
 
-/* these methods are the basic functions */
-bool move(struct unt *slf, int *loc){
-    /* determine if move is possible */
-    if(slf->cur_steps <= 0){return FALSE;}
+bool inf_atk(struct unt *slf, struct unt *def){
     
-    /* compute if magnitude of walk vector is possible */
-    int dist = (int)distance(&slf->loc[0],loc);
-    if(dist - slf->cur_steps < 0){return FALSE;}
+    /* determine if can attack */
+    if(inf_can_atk(slf,def) == FALSE){return FALSE;}
     
-    /* map is empty etc, possible to move to that square */
+    // make changes and "fire shot"
+    slf->ammo--; slf->did_fire = TRUE;
     
+    float tDMG = tDamage(slf,def);
     
-    slf->cur_steps -= dist;
-    slf->loc[0] = *loc; slf->loc[1] = *(loc+1); slf->loc[2] = *(loc+2);
+    bool kill = def->def(def,slf,&tDMG);
+    
+    if(kill == TRUE){
+        slf->promote(slf);
+    }
     
     return TRUE;
 }
 
-/* finished */
-bool promote(struct unt *slf){
-    /* determine if unit is able to be promoted */
-    if(slf->promo != 0){return FALSE;}
+bool inf_def(struct unt *slf, struct unt *att,float *dmg){
+    return FALSE;
+}
+
+bool inf_can_atk(struct unt *slf, struct unt *def){
+    return TRUE;
+}
+
+bool inf_can_mov(struct unt *slf, int *loc){
+    /* determine if can move based on map characteristic */
+    /* determine if can move if(board square == empty) */
     
-    slf->promo += slf->rank;
-    slf->max_ammo++;
-    slf->rank++;
-    slf->max_steps++;
+    /* determine if can move using distance */
+    float dis = distance(&slf->loc[0], loc);
+    
+    if(slf->cur_steps - (int)dis < 0){return FALSE;}
     
     return TRUE;
 }
 
-bool can_attk(struct unt *slf,int *loc){
-    /* determins if unit can shoot */
-    if(slf->ammo == 0){return FALSE;}
-    if(slf->did_fire == TRUE){return FALSE;}
+bool inf_move(struct unt *slf, int *loc){
     
-    /* gets the minimum range to determine if withing range */
-    int min_range = (slf->range - (int)slf->range ) * 10;
-    if(distance(&slf->loc[0],loc) > slf->range || distance(&slf->loc[0],loc) < min_range){return FALSE;}
+    if(inf_can_mov(slf,loc) == FALSE){return FALSE;}
+    
+    float dis = distance(&slf->loc[0], loc);
+    slf->cur_steps -= (int)dis;
+    
+    slf->loc[0] = *loc;
+    slf->loc[1] = *(loc+1);
+    slf->loc[2] = *(loc+2);
+    
+    /* give height range bonus.... */
     
     
     return TRUE;
+}
+
+bool inf_promote(struct unt *slf){
+    
+    if(slf->promo > 0){return FALSE;}
+    
+    slf->promo = 5 + slf->rank;
+    slf->rank += 1;
+    slf->max_ammo += 1;
+    slf->range += 1;
+    
+    return TRUE;
+}
+
+void inf_refresh(struct unt *slf){
+    slf->did_fire = FALSE;
+    slf->cur_steps = slf->max_steps;
 }

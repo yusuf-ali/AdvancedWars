@@ -1,5 +1,5 @@
 #include <stdio.h>
-#import "infantry.h"
+#import "unit.h"
 
 int main(int argc, const char * argv[])
 {
