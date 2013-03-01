@@ -22,7 +22,8 @@ struct unt{
     
     /* static, change only with promotion */
     int max_ammo;        /* maximum unit */
-    float range;          /* the range this unit can shoot */
+    int range;          /* the maximum range this unit can shoot */
+    int min_range;      /* the minimum range this unit can shoot */
     int rank;           /* the rank of a unit */
     int dmg[5];         /* damage modifiers to specific classes */
     
@@ -57,15 +58,9 @@ struct unt{
 /* massive initialize method to initialize all units!! */
 void initialize(struct unt *unit,int type,int team, int *loc);
 
-/*
- these methods are for formulas used to calculate
- events in the game, theoretical damage etc.
- */
-float tDamage(struct unt *atk,struct unt *def);                      // calculates theoretical damage
-float aDamage(struct unt *def,int *tdmg);                      // calculates the actual damage inflicted
-float rDamage(struct unt *def,struct unt *atk);                       // calculates the retaliation damage
-float distance(int *loc1,int *loc2);                    // determins distance of 2 x,y,z vectors
-
-
+float vector_dis(int *loc,int *loc2);
+float tDamage(struct unt *atk, struct unt *def);
+float aDamage(struct unt *def, float *dmg);
+float rDamage(struct unt *def, struct unt *atk);
 
 #endif
