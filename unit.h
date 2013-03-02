@@ -1,4 +1,4 @@
-#import "util.h"
+#include "util.h"
 
 /*
  header is the universal unit "class"
@@ -19,6 +19,7 @@ struct unt{
     int type;           /* sub class of the unit */
     int Class;          /* class of unit, for infantry it is 0 */
     int max_steps;      /* maximum steps this unit can make */
+    int range_mod;      /* range modifier for increase height and stuff */
     
     /* static, change only with promotion */
     int max_ammo;        /* maximum unit */
@@ -59,8 +60,8 @@ struct unt{
 void initialize(struct unt *unit,int type,int team, int *loc);
 
 float vector_dis(int *loc,int *loc2);
-float tDamage(struct unt *atk, struct unt *def);
-float aDamage(struct unt *def, float *dmg);
-float rDamage(struct unt *def, struct unt *atk);
+float tDamage(struct unt *atk, struct unt *def);    // calculates theoretical damage
+float aDamage(struct unt *def, float *dmg);         // calculates actual damage
+float rDamage(struct unt *def, struct unt *atk);    // calculates retaliation damage
 
 #endif
