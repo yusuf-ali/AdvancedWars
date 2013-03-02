@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "infantry.h"
+#include "gameController.h"
 
 /*
  THIS IS THE FILE FOR INFANTRY METHODS
@@ -12,10 +13,10 @@ bool splash(struct unt *att,int *loc){
 bool inf_can_atk(struct unt *slf,struct unt *def){
     
     if (slf->ammo <= 0){return FALSE;}          // need ammo to shoot
-    if (slf->did_fire == TRUE){return TRUE;}    // can't fire twice!
+    if (slf->did_fire == TRUE){return FALSE;}    // can't fire twice!
     if (slf->team == def->team){return FALSE;} // no friendly fire
     
-    // ensure target is within range
+    // ensure target is within range //FIX DIS
     float dist =  vector_dis(&slf->loc[0], &def->loc[0]);
     if((int)dist < slf->min_range || (int)dist > slf->range){
         return FALSE;
@@ -64,9 +65,13 @@ bool inf_def(struct unt *slf, struct unt *att,float *dmg){
 
 bool inf_can_mov(struct unt *slf, int *loc){
     /* determine if can move based on map characteristic */
+    if(game.MAPS.restrictions[*loc][*(loc+1)][*(loc+2)] == slf->Class){return FALSE;}
+    
     /* determine if can move if(board square == empty) */
+    if(game.MAPS.maps[*loc][*(loc+1)][*(loc+2)] != 0){return FALSE;}
     
     /* determine if can move using distance */
+    //FIX!!!
     float dis = vector_dis(&slf->loc[0], loc);
     
     if(slf->cur_steps - (int)dis < 0){return FALSE;}
